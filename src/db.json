@@ -1,0 +1,74 @@
+{
+  "top_places": [
+    {
+      "id": "1",
+      "image": "https://c36tgb08-3000.asse.devtunnels.ms/images/2082f59465c39094ce90bebd0fcf8fa7.jpeg",
+      "title": "Amalfi",
+      "location": "Italy",
+      "description": "The ultimate Amalfi Coast travel guide, where to stay, where to eat, and what areas to visit in the Amalfi Coast of Italy."
+    },
+    {
+      "id": "2",
+      "image": "https://c36tgb08-3000.asse.devtunnels.ms/images/922a0cb274208ccd234f6c14f2174b8b.jpeg",
+      "title": "Granada",
+      "location": "Spain",
+      "description": "Granada is the capital city of the province of Granada, in the autonomous community of Andalusia, Spain."
+    },
+    {
+      "id": "3",
+      "image": "https://c36tgb08-3000.asse.devtunnels.ms/images/e57a2a310330ee1d8928eb75d416a53d.jpeg",
+      "title": "Cherry blossoms",
+      "location": "Japan",
+      "description": "Cherry blossoms usually bloom between mid-March and early May. In 2022, Tokyo's cherry blossom season officially began on March 20."
+    }
+  ],
+  "places": [
+    {
+      "id": "4",
+      "image": "https://c36tgb08-3000.asse.devtunnels.ms/images/645d5f28e26c7de2a280f71db15c2141.jpeg",
+      "title": "Cappadocia",
+      "location": "Turkey",
+      "description": "Cappadocia's landscape includes dramatic expanses of soft volcanic rock, shaped by erosion into towers, cones, valleys, and caves."
+    },
+    {
+      "id": "5",
+      "image": "https://c36tgb08-3000.asse.devtunnels.ms/images/eea622430834cb64b900c2f03e5be6b8.jpeg",
+      "title": "Capri",
+      "location": "Italy",
+      "description": "Capri is an island of a thousand faces, where visitors can walk the trails skirting the cliffs above the Mediterranean."
+    },
+    {
+      "id": "6",
+      "image": "https://c36tgb08-3000.asse.devtunnels.ms/images/0e627c12c05e4dd93ab122d618ea7849.jpeg",
+      "title": "Bora Bora",
+      "location": "Polynesia",
+      "description": "Learn how you can travel Bora Bora on a budget and how overwater bungalows are possible for cheap."
+    },
+    {
+      "id": "7",
+      "image": "https://c36tgb08-3000.asse.devtunnels.ms/images/c2dcbb54ca9316831b0f6ed4d4136dda.jpeg",
+      "title": "Phuket",
+      "location": "Thailand",
+      "description": "Phuket is the largest island in Thailand, located in the Andaman Sea in southern Thailand."
+    },
+    {
+      "id": "8",
+      "image": "https://c36tgb08-3000.asse.devtunnels.ms/images/images (1).jpeg",
+      "title": "gunung gede",
+      "location": "Indonesia",
+      "description": "Gunung gede adalah gunung terbesar, Berlokasi di Indonesia."
+    }
+  ],
+  "notes": [
+    {
+      "id": "1731427547025",
+      "text": "wawew",
+      "itemId": "8"
+    },
+    {
+      "text": "hello",
+      "itemId": "1",
+      "id": "1731477904303"
+    }
+  ]
+}
