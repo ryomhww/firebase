@@ -1,7 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
-import SearchScreen from '../screens/SearchScreen';
+import SettingScreen from '../screens/SettingScreen';
 import FavoriteScreen from '../screens/FavoriteScreen';
 import Icon from '../components/Icon';
 import {colors, sizes} from '../constants/theme';
@@ -12,13 +12,13 @@ const tabs = [
     name: 'Home',
     screen: HomeScreen,
   },
-  // {
-  //   name: 'Search',
-  //   screen: SearchScreen,
-  // },
   {
     name: 'Favorite',
     screen: FavoriteScreen,
+  },
+  {
+    name: 'Setting',
+    screen: SettingScreen,
   },
 ];
 

@@ -1,22 +1,31 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Impor useNavigation
-import { useFavorites } from '../components/FavoriteContext'; // Impor useFavorites
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Dimensions,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useFavorites } from '../components/FavoriteContext';
 import { sizes, spacing } from '../constants/theme';
 
+const { width, height } = Dimensions.get('window');
+
 const FavoriteScreen = () => {
-  const navigation = useNavigation(); // Inisialisasi navigation
-  const { favorites } = useFavorites(); // Ambil data favorit dari context
+  const navigation = useNavigation();
+  const { favorites } = useFavorites();
 
   const handleNavigateToDetail = (item) => {
-    // Navigasi ke DetailScreen dengan membawa data item favorit
     navigation.navigate('DetailScreen', { id: item.id, item });
   };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.itemContainer}
-      onPress={() => handleNavigateToDetail(item)} // Arahkan ke halaman detail saat item diklik
+      onPress={() => handleNavigateToDetail(item)}
     >
       <Image source={{ uri: item.image }} style={styles.itemImage} />
       <View style={styles.itemTextContainer}>
@@ -29,11 +38,11 @@ const FavoriteScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Favorite Places</Text>
-      {/* Menampilkan daftar favorit */}
       <FlatList
-        data={Object.values(favorites)} // Mengambil semua item favorit dari context
-        renderItem={renderItem} // Render item favorit
+        data={Object.values(favorites)}
+        renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.listContainer}
       />
     </View>
   );
@@ -43,9 +52,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: spacing.l,
+    backgroundColor: '#fff',
   },
   header: {
-    fontSize: sizes.h1,
+    fontSize: width * 0.07, // Header menyesuaikan lebar layar
     fontWeight: 'bold',
     marginBottom: spacing.m,
   },
@@ -62,8 +72,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   itemImage: {
-    width: 80,
-    height: 80,
+    width: width * 0.2, // Gambar responsif berdasarkan lebar layar
+    height: width * 0.2, // Gambar berbentuk persegi
     borderRadius: 8,
     marginRight: spacing.m,
   },
@@ -72,12 +82,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   itemTitle: {
-    fontSize: sizes.h2,
+    fontSize: width * 0.05, // Font responsif untuk judul
     fontWeight: 'bold',
   },
   itemLocation: {
-    fontSize: sizes.h3,
+    fontSize: width * 0.04, // Font responsif untuk lokasi
     color: '#555',
+  },
+  listContainer: {
+    paddingBottom: height * 0.1, // Padding bawah untuk responsif
   },
 });
 

@@ -1,14 +1,25 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, Alert, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
+import { Menu, MenuItem, MenuDivider } from 'react-native-material-menu';
 import { colors, sizes, spacing } from '../constants/theme';
 
-const API_URL = 'https://c36tgb08-3000.asse.devtunnels.ms/notes';
+const API_URL = 'https://3k1m2fm4-3000.asse.devtunnels.ms/notes';
 
 const NotesTravel = ({ itemId }) => {
   const [note, setNote] = useState('');
   const [notesList, setNotesList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [menuVisible, setMenuVisible] = useState(null); // Menyimpan ID catatan yang sedang membuka menu
 
   const fetchNotes = useCallback(async () => {
     setLoading(true);
@@ -55,7 +66,6 @@ const NotesTravel = ({ itemId }) => {
         await fetchNotes();
         setNote('');
         setEditingId(null);
-
       } else {
         console.error('Failed to save note:', await response.text());
         Alert.alert('Error', 'Failed to save note. Please try again.');
@@ -81,7 +91,7 @@ const NotesTravel = ({ itemId }) => {
             try {
               const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
               if (response.ok) {
-                setNotesList(prevNotes => prevNotes.filter(note => note.id !== id));
+                setNotesList((prevNotes) => prevNotes.filter((note) => note.id !== id));
                 Alert.alert('Success', 'Note deleted successfully');
               } else {
                 console.error('Failed to delete note:', await response.text());
@@ -108,20 +118,42 @@ const NotesTravel = ({ itemId }) => {
   const renderNoteItem = ({ item }) => (
     <View style={styles.noteItem}>
       <Text style={styles.noteText}>{item.text}</Text>
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.editButton} onPress={() => editNote(item)}>
-          <Text style={styles.buttonText}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteNote(item.id)}>
-          <Text style={styles.buttonText}>Hapus</Text>
-        </TouchableOpacity>
-      </View>
+      <Menu
+        visible={menuVisible === item.id}
+        anchor={
+          <TouchableOpacity
+            onPress={() => setMenuVisible(item.id)}
+            style={styles.menuButton}
+          >
+            <Text style={styles.menuIcon}>⋮</Text>
+          </TouchableOpacity>
+        }
+        onRequestClose={() => setMenuVisible(null)}
+      >
+        <MenuItem
+          onPress={() => {
+            setMenuVisible(null);
+            editNote(item);
+          }}
+        >
+          Edit
+        </MenuItem>
+        <MenuDivider />
+        <MenuItem
+          onPress={() => {
+            setMenuVisible(null);
+            deleteNote(item.id);
+          }}
+        >
+          Delete
+        </MenuItem>
+      </Menu>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Catatan Perjalanan</Text>
+      <Text style={styles.sectionTitle}>Travel Notes</Text>
       <FlatList
         data={notesList}
         keyExtractor={(item) => item.id.toString()}
@@ -130,24 +162,24 @@ const NotesTravel = ({ itemId }) => {
           loading ? (
             <ActivityIndicator size="large" color={colors.primary} />
           ) : (
-            <Text style={styles.emptyText}>Belum ada catatan. Tambahkan catatan Anda!</Text>
+            <Text style={styles.emptyText}>There are no notes yet. Add your note!</Text>
           )
         }
       />
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Tulis catatan perjalanan Anda..."
+          placeholder="Write your travel notes..."
           value={note}
           onChangeText={setNote}
           editable={!loading}
         />
-        <TouchableOpacity 
-          style={[styles.addButton, loading && styles.disabledButton]} 
+        <TouchableOpacity
+          style={[styles.addButton, loading && styles.disabledButton]}
           onPress={handleSaveNote}
           disabled={loading}
         >
-          <Text style={styles.buttonText}>{editingId ? 'Update' : 'Tambah'}</Text>
+          <Text style={styles.buttonText}>{editingId ? 'Update' : 'Add'}</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -155,77 +187,69 @@ const NotesTravel = ({ itemId }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
+  container: {
     flex: 1,
     padding: spacing.l,
     backgroundColor: colors.background,
   },
-  sectionTitle: { 
-    fontSize: sizes.h3, 
-    fontWeight: 'bold', 
+  sectionTitle: {
+    fontSize: sizes.h3,
+    fontWeight: 'bold',
     marginBottom: spacing.m,
     color: colors.text,
   },
-  inputContainer: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: spacing.m,
   },
-  input: { 
-    flex: 1, 
-    backgroundColor: colors.white, 
-    borderRadius: sizes.radius, 
-    paddingHorizontal: spacing.m, 
+  input: {
+    flex: 1,
+    backgroundColor: colors.white,
+    borderRadius: sizes.radius,
+    paddingHorizontal: spacing.m,
     paddingVertical: spacing.s,
-    borderWidth: 1, 
+    borderWidth: 1,
     borderColor: colors.gray,
     color: colors.text,
   },
-  addButton: { 
-    backgroundColor: colors.primary, 
-    paddingVertical: spacing.s, 
-    paddingHorizontal: spacing.l, 
-    borderRadius: sizes.radius, 
+  addButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.s,
+    paddingHorizontal: spacing.l,
+    borderRadius: sizes.radius,
     marginLeft: spacing.s,
   },
   disabledButton: {
     opacity: 0.5,
   },
-  buttonText: { 
-    color: colors.white, 
+  buttonText: {
+    color: colors.white,
     fontWeight: 'bold',
   },
-  noteItem: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'space-between', 
-    paddingVertical: spacing.s, 
-    borderBottomWidth: 1, 
+  noteItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.s,
+    borderBottomWidth: 1,
     borderColor: colors.lightGray,
   },
-  noteText: { 
+  noteText: {
     flex: 1,
     color: colors.text,
   },
-  buttonsContainer: { 
-    flexDirection: 'row',
+  menuButton: {
+    paddingHorizontal: spacing.m,
+    paddingVertical: spacing.s,
   },
-  editButton: { 
-    backgroundColor: colors.orange, 
-    paddingHorizontal: spacing.m, 
-    paddingVertical: spacing.s, 
-    borderRadius: sizes.radius, 
-    marginRight: spacing.s,
+  menuIcon: {
+    fontSize: sizes.h2,
+    color: colors.black,
   },
-  deleteButton: { 
-    backgroundColor: colors.red, 
-    paddingHorizontal: spacing.m, 
-    paddingVertical: spacing.s, 
-    borderRadius: sizes.radius,
-  },
-  emptyText: { 
-    textAlign: 'center', 
-    color: colors.gray, 
+  emptyText: {
+    textAlign: 'center',
+    color: colors.gray,
     marginTop: spacing.l,
   },
 });

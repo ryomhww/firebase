@@ -7,7 +7,7 @@ import { useFavorites } from '../components/FavoriteContext'; // Mengimpor useFa
 const CARD_WIDTH = sizes.width / 2 - (spacing.l + spacing.l / 2);
 const CARD_HEIGHT = 220;
 
-const TripsList = ({ list, navigation }) => {
+const TripsList = ({ list, navigation, onMove }) => {
   const { favorites, addFavorite, removeFavorite } = useFavorites(); // Mengakses data favorit dari context
 
   const toggleFavorite = (id, item) => {
@@ -21,27 +21,39 @@ const TripsList = ({ list, navigation }) => {
   return (
     <View style={styles.container}>
       {list.map((item) => (
-        <TouchableOpacity
-          key={item.id}
-          style={styles.cardContainer}
-          onPress={() => navigation.navigate('DetailScreen', { id: item.id, item })} // Mengirim id & item
-        >
-          <View style={[styles.card, shadow.light]}>
-            <View style={styles.imageBox}>
-              <Image style={styles.image} source={{ uri: item.image }} />
-            </View>
-            <View style={styles.footer}>
-              <View style={styles.titleBox}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.location}>{item.location}</Text>
+        <View key={item.id} style={styles.cardContainer}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('DetailScreen', { id: item.id, item })
+            } // Mengirim id & item
+          >
+            <View style={[styles.card, shadow.light]}>
+              <View style={styles.imageBox}>
+                <Image style={styles.image} source={{ uri: item.image }} />
               </View>
-              <FavoriteButton
-                active={favorites[item.id] || false} // Cek apakah item.id ada dalam state favorit global
-                onPress={() => toggleFavorite(item.id, item)} // Toggle status favorit
-              />
+              <View style={styles.footer}>
+                <View style={styles.titleBox}>
+                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.location}>{item.location}</Text>
+                </View>
+                <FavoriteButton
+                  active={favorites[item.id] || false} // Cek apakah item.id ada dalam state favorit global
+                  onPress={() => toggleFavorite(item.id, item)} // Toggle status favorit
+                />
+              </View>
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+
+          {/* Tombol untuk memindahkan item */}
+          {onMove && (
+            <TouchableOpacity
+              style={styles.moveButton}
+              onPress={() => onMove(item)} // Panggil fungsi pemindahan
+            >
+              <Text style={styles.moveButtonText}>Move to Top Places</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       ))}
     </View>
   );
@@ -93,6 +105,17 @@ const styles = StyleSheet.create({
   location: {
     fontSize: sizes.body,
     color: colors.lightGray,
+  },
+  moveButton: {
+    marginTop: 8,
+    backgroundColor: colors.primary,
+    padding: 8,
+    borderRadius: sizes.radius,
+    alignItems: 'center',
+  },
+  moveButtonText: {
+    color: colors.white,
+    fontWeight: 'bold',
   },
 });
 

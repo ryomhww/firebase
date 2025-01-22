@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   FlatList,
   Text,
@@ -7,24 +7,24 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import { useNavigation } from '@react-navigation/native';
 import { colors, shadow, sizes, spacing } from '../constants/theme';
 import FavoriteButton from './FavoriteButton';
-import { useFavorites } from '../components/FavoriteContext'; // Impor useFavorites dari context
+import { useFavorites } from '../components/FavoriteContext';
 
 const CARD_WIDTH = sizes.width - 80;
 const CARD_HEIGHT = 200;
 const CARD_WIDTH_SPACING = CARD_WIDTH + spacing.l;
 
-const TopPlacesCarousel = ({ list }) => {
-  const navigation = useNavigation(); // Inisialisasi useNavigation
-  const { favorites, addFavorite, removeFavorite } = useFavorites(); // Ambil data favorit dan fungsi dari context
+const TopPlacesCarousel = ({ list, onMove }) => {
+  const navigation = useNavigation();
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
 
   const toggleFavorite = (id, item) => {
     if (favorites[id]) {
-      removeFavorite(id); // Jika sudah ada, hapus dari favorit
+      removeFavorite(id);
     } else {
-      addFavorite(item); // Jika belum ada, tambahkan ke favorit
+      addFavorite(item);
     }
   };
 
@@ -36,32 +36,44 @@ const TopPlacesCarousel = ({ list }) => {
       decelerationRate="fast"
       showsHorizontalScrollIndicator={false}
       keyExtractor={(i) => i.id.toString()}
-      renderItem={({ item, index }) => {
-        return (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('DetailScreen', { id: item.id, item })} // Mengirim id & item
-            style={{
-              marginLeft: spacing.l,
-              marginRight: index === list.length - 1 ? spacing.l : 0,
-            }}
-          >
-            <View style={[styles.card, shadow.dark]}>
-              <FavoriteButton
-                style={styles.favorite}
-                active={favorites[item.id] || false} // Mengatur status favorit
-                onPress={() => toggleFavorite(item.id, item)} // Toggle status favorit
-              />
-              <View style={styles.imageBox}>
-                <Image source={{ uri: item.image }} style={styles.image} />
-              </View>
-              <View style={styles.titleBox}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.location}>{item.location}</Text>
-              </View>
+      renderItem={({ item, index }) => (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('DetailScreen', { id: item.id, item })
+          }
+          style={{
+            marginLeft: spacing.l,
+            marginRight: index === list.length - 1 ? spacing.l : 0,
+          }}
+        >
+          <View style={[styles.card, shadow.dark]}>
+            <FavoriteButton
+              style={styles.favorite}
+              active={favorites[item.id] || false}
+              onPress={() => toggleFavorite(item.id, item)}
+            />
+            <View style={styles.imageBox}>
+              <Image source={{ uri: item.image }} style={styles.image} />
             </View>
-          </TouchableOpacity>
-        );
-      }}
+            <View style={styles.titleBox}>
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.location}>{item.location}</Text>
+
+              {onMove && (
+                <TouchableOpacity
+                  style={styles.moveButton}
+                  onPress={(e) => {
+                    e.stopPropagation(); // Hindari trigger navigasi saat tombol ditekan
+                    onMove(item);
+                  }}
+                >
+                  <Text style={styles.moveButtonText}>Move to Places</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </TouchableOpacity>
+      )}
     />
   );
 };
@@ -102,6 +114,17 @@ const styles = StyleSheet.create({
   location: {
     fontSize: sizes.h3,
     color: colors.white,
+  },
+  moveButton: {
+    marginTop: 10,
+    backgroundColor: colors.primary,
+    padding: 8,
+    borderRadius: sizes.radius,
+  },
+  moveButtonText: {
+    color: colors.white,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
